@@ -5,8 +5,9 @@
 package Core.GamePanel;
 
 import Utils.KeyHandler.KeyHandler;
-import Utils.Entities.Player.Player;
+import Core.Entities.Player.Player;
 import Utils.ScreenSettings.ScreenSettings;
+import Utils.TileManager.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +16,7 @@ public class GamePanel extends JPanel implements Runnable {
     private final ScreenSettings screenSettings;
     private final KeyHandler keyHandler;
     private final Player player;
+    private final TileManager tileManager;
 
     /**
      * Constructor for the GamePanel class. Initializes the screen settings, key handler, and player.
@@ -22,6 +24,7 @@ public class GamePanel extends JPanel implements Runnable {
     public GamePanel() {
         screenSettings = new ScreenSettings(16, 3, 16, 12, 60);
         keyHandler = new KeyHandler();
+        tileManager = new TileManager(screenSettings);
         player = new Player(new Point(100, 100), 4, screenSettings);
 
         setupPanel();
@@ -82,6 +85,7 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
+        tileManager.draw(g2d);
         player.draw(g2d);
         g2d.dispose();
     }
