@@ -88,13 +88,7 @@ public class Player extends Entity implements MoveableCharacter {
         int newX = position.x;
         int newY = Math.max(position.y - speed, 0);
 
-        // calculate the tile position the player is going to move into
-        int tileX = newX / screenSettings.getTileSize();
-        int tileY = newY / screenSettings.getTileSize();
-
-        // check if the tile is collidable
-        if (!world[tileX][tileY].isCollidable()) {
-            // if not, update the player's position
+        if (!isCollidable(newX, newY)) {
             position.y = newY;
         }
     }
@@ -104,13 +98,7 @@ public class Player extends Entity implements MoveableCharacter {
         int newX = position.x;
         int newY = Math.min(position.y + speed, screenSettings.getScreenHeight() - screenSettings.getTileSize());
 
-        // calculate the tile position the player is going to move into
-        int tileX = newX / screenSettings.getTileSize();
-        int tileY = (newY + screenSettings.getTileSize() - 1) / screenSettings.getTileSize(); // adjust for bottom edge
-
-        // check if the tile is collidable
-        if (!world[tileX][tileY].isCollidable()) {
-            // if not, update the player's position
+        if (!isCollidable(newX, newY)) {
             position.y = newY;
         }
     }
@@ -120,13 +108,7 @@ public class Player extends Entity implements MoveableCharacter {
         int newX = Math.max(position.x - speed, 0);
         int newY = position.y;
 
-        // calculate the tile position the player is going to move into
-        int tileX = newX / screenSettings.getTileSize();
-        int tileY = newY / screenSettings.getTileSize();
-
-        // check if the tile is collidable
-        if (!world[tileX][tileY].isCollidable()) {
-            // if not, update the player's position
+        if (!isCollidable(newX, newY)) {
             position.x = newX;
         }
     }
@@ -136,16 +118,28 @@ public class Player extends Entity implements MoveableCharacter {
         int newX = Math.min(position.x + speed, screenSettings.getScreenWidth() - screenSettings.getTileSize());
         int newY = position.y;
 
-        // calculate the tile position the player is going to move into
-        int tileX = (newX + screenSettings.getTileSize() - 1) / screenSettings.getTileSize(); // adjust for right edge
-        int tileY = newY / screenSettings.getTileSize();
-
-        // check if the tile is collidable
-        if (!world[tileX][tileY].isCollidable()) {
-            // if not, update the player's position
+        if (!isCollidable(newX, newY)) {
             position.x = newX;
         }
     }
+
+    private boolean isCollidable(int newX, int newY) {
+        int tileSize = screenSettings.getTileSize();
+        int playerSize = screenSettings.getTileSize(); // assuming the player size is equal to the tile size
+
+        int topLeftX = newX / tileSize;
+        int topLeftY = newY / tileSize;
+        int topRightX = (newX + playerSize - 1) / tileSize;
+        int topRightY = topLeftY;
+        int bottomLeftX = topLeftX;
+        int bottomLeftY = (newY + playerSize - 1) / tileSize;
+        int bottomRightX = topRightX;
+        int bottomRightY = bottomLeftY;
+
+        return world[topLeftX][topLeftY].isCollidable() || world[topRightX][topRightY].isCollidable()
+                || world[bottomLeftX][bottomLeftY].isCollidable() || world[bottomRightX][bottomRightY].isCollidable();
+       }
+
 
     /**
      * Renders the player on the screen using the provided Graphics2D object.
