@@ -90,4 +90,8 @@ public class TileManager {
     public void draw(Graphics2D g2) {
         worldRenderer.draw(g2);
     }
+
+    public Tile[][] getTileMap() {
+        return worldGenerator.getTileMap();
+    }
 }

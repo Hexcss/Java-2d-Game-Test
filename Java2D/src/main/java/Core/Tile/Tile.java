@@ -6,12 +6,13 @@ import java.awt.image.BufferedImage;
 
 public class Tile {
     private BufferedImage image;
-    private boolean collidable = false;
+    private boolean collidable;
     private TileType tileType;
 
     public Tile(BufferedImage image, TileType tileType) {
         this.image = image;
         this.tileType = tileType;
+        setCollidable(tileType);
     }
 
     public BufferedImage getImage() {
@@ -24,5 +25,12 @@ public class Tile {
 
     public TileType getTileType() {
         return this.tileType;
+    }
+
+    private void setCollidable(TileType tileType) {
+        switch (tileType) {
+            case WATER, WALL, TREE -> this.collidable = true;
+            default -> this.collidable = false;
+        }
     }
 }

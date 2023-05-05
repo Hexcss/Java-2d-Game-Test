@@ -5,8 +5,10 @@
 package Core.Entities.Player;
 
 import Core.Entities.Entity.Entity;
+import Core.Tile.Tile;
 import Utils.KeyHandler.KeyHandler;
 import Utils.ScreenSettings.ScreenSettings;
+import Utils.TileManager.World.WorldGenerator.WorldGenerator;
 import Utils.Types.Enums.Direction;
 import Utils.Types.Interfaces.MoveableCharacter;
 
@@ -29,8 +31,8 @@ public class Player extends Entity implements MoveableCharacter {
      * @param speed The speed at which the player moves in pixels per frame.
      * @param screenSettings A ScreenSettings object that contains information about the screen's dimensions.
      */
-    public Player(Point position, int speed, ScreenSettings screenSettings) {
-        super(position, speed, screenSettings);
+    public Player(Point position, int speed, ScreenSettings screenSettings, Tile[][] world) {
+        super(position, speed, screenSettings, world);
         loadPlayerImages();
     }
 
@@ -81,36 +83,68 @@ public class Player extends Entity implements MoveableCharacter {
         }
     }
 
-    /**
-     * Moves the player up, respecting the screen's vertical boundaries.
-     */
     @Override
     public void moveUp() {
-        position.y = Math.max(position.y - speed, 0);
+        int newX = position.x;
+        int newY = Math.max(position.y - speed, 0);
+
+        // calculate the tile position the player is going to move into
+        int tileX = newX / screenSettings.getTileSize();
+        int tileY = newY / screenSettings.getTileSize();
+
+        // check if the tile is collidable
+        if (!world[tileX][tileY].isCollidable()) {
+            // if not, update the player's position
+            position.y = newY;
+        }
     }
 
-    /**
-     * Moves the player down, respecting the screen's vertical boundaries.
-     */
     @Override
     public void moveDown() {
-        position.y = Math.min(position.y + speed, screenSettings.getScreenHeight() - screenSettings.getTileSize());
+        int newX = position.x;
+        int newY = Math.min(position.y + speed, screenSettings.getScreenHeight() - screenSettings.getTileSize());
+
+        // calculate the tile position the player is going to move into
+        int tileX = newX / screenSettings.getTileSize();
+        int tileY = (newY + screenSettings.getTileSize() - 1) / screenSettings.getTileSize(); // adjust for bottom edge
+
+        // check if the tile is collidable
+        if (!world[tileX][tileY].isCollidable()) {
+            // if not, update the player's position
+            position.y = newY;
+        }
     }
 
-    /**
-     * Moves the player left, respecting the screen's horizontal boundaries.
-     */
     @Override
     public void moveLeft() {
-        position.x = Math.max(position.x - speed, 0);
+        int newX = Math.max(position.x - speed, 0);
+        int newY = position.y;
+
+        // calculate the tile position the player is going to move into
+        int tileX = newX / screenSettings.getTileSize();
+        int tileY = newY / screenSettings.getTileSize();
+
+        // check if the tile is collidable
+        if (!world[tileX][tileY].isCollidable()) {
+            // if not, update the player's position
+            position.x = newX;
+        }
     }
 
-    /**
-     * Moves the player right, respecting the screen's horizontal boundaries.
-     */
     @Override
     public void moveRight() {
-        position.x = Math.min(position.x + speed, screenSettings.getScreenWidth() - screenSettings.getTileSize());
+        int newX = Math.min(position.x + speed, screenSettings.getScreenWidth() - screenSettings.getTileSize());
+        int newY = position.y;
+
+        // calculate the tile position the player is going to move into
+        int tileX = (newX + screenSettings.getTileSize() - 1) / screenSettings.getTileSize(); // adjust for right edge
+        int tileY = newY / screenSettings.getTileSize();
+
+        // check if the tile is collidable
+        if (!world[tileX][tileY].isCollidable()) {
+            // if not, update the player's position
+            position.x = newX;
+        }
     }
 
     /**

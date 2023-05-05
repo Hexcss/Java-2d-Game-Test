@@ -31,7 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
         tileManager = new TileManager(screenSettings, noiseGenerator);
         Point playerStartPos = tileManager.findStartPosition(TileType.GRASS);
 
-        player = new Player(playerStartPos, 4, screenSettings);
+        player = new Player(playerStartPos, 4, screenSettings, tileManager.getTileMap());
 
         setupPanel();
     }
