@@ -7,7 +7,10 @@ package Core.GamePanel;
 import Utils.KeyHandler.KeyHandler;
 import Core.Entities.Player.Player;
 import Utils.ScreenSettings.ScreenSettings;
+import Utils.TileManager.JoiseNoiseGenerator.JoiseNoiseGenerator;
 import Utils.TileManager.TileManager;
+import Utils.Types.Enums.TileType;
+import Utils.Types.Interfaces.INoiseGenerator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,8 +27,11 @@ public class GamePanel extends JPanel implements Runnable {
     public GamePanel() {
         screenSettings = new ScreenSettings(16, 3, 16, 12, 60);
         keyHandler = new KeyHandler();
-        tileManager = new TileManager(screenSettings);
-        player = new Player(new Point(100, 100), 4, screenSettings);
+        INoiseGenerator noiseGenerator = new JoiseNoiseGenerator();
+        tileManager = new TileManager(screenSettings, noiseGenerator);
+        Point playerStartPos = tileManager.findStartPosition(TileType.GRASS);
+
+        player = new Player(playerStartPos, 4, screenSettings);
 
         setupPanel();
     }
